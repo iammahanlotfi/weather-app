@@ -43,6 +43,16 @@ const getForecastWeatherByName = async (city) => {
     return json ; 
 }
 
+const getForecastWeatherByCoordinates = async (lat , lon) => { 
+    const url =`${BASR_URL}/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric` ; 
+    const response = await fetch(url) ; 
+    const json = await response.json(); 
+    return json ; 
+} 
+
+
+
+
 const renderCurrentWeather = (data) => { 
     
     const weatherJSX = `
@@ -66,7 +76,10 @@ const getWeekDay = (date) => {
     return DAYS[new Date(date * 1000).getDay()] ; 
 }
 
-const renderForecasttWeather = (data) => { 
+const renderForecasttWeather = (data) => {
+     
+    forecastContainer.innerHTML = "" ;
+
     data = data.list.filter((obj) => obj.dt_txt.endsWith("12:00:00")) ; 
     data.forEach((item) => { 
         const forecastJSX = `
@@ -99,6 +112,9 @@ const positionCallback = async (position) => {
     const {latitude, longitude} = position.coords; 
     const currentData = await getCurrentWeatherByCoordinates(latitude , longitude) ; 
     renderCurrentWeather(currentData) ; 
+    const forecastData = await getForecastWeatherByCoordinates(latitude , longitude) ;
+    renderForecasttWeather(forecastData) ;
+
 }
 
 const errorCallback = (error) => { 
