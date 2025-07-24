@@ -1,6 +1,4 @@
-const BASR_URL = "https://api.openweathermap.org/data/2.5";
-const API_KEY = "b32806747e7d4a7d7689a1f37cef306f" ; 
-
+import getWeatherData from "./utils/httpReq.js";
 const DAYS = [
     "Sunday",
     "Monday" ,
@@ -17,40 +15,6 @@ const searchButton = document.querySelector("button") ;
 const weatherContainer = document.getElementById("weather") ; 
 const forecastContainer = document.getElementById("forecast") ; 
 const locationIcon = document.getElementById("location") ; 
-
-const getCurrentWeatherByName =  async (city) => { 
-    const url =`${BASR_URL}/weather?q=${city}&appid=${API_KEY}&units=metric` ; 
-    const response = await fetch(url) ; 
-    const json = await response.json(); 
-    return json ; 
-} 
-
-
-
-const getCurrentWeatherByCoordinates = async (lat , lon) => { 
-    const url =`${BASR_URL}/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric` ; 
-    const response = await fetch(url) ; 
-    const json = await response.json(); 
-    return json ; 
-} 
-
-
-
-const getForecastWeatherByName = async (city) => { 
-    const url =`${BASR_URL}/forecast?q=${city}&appid=${API_KEY}&units=metric` ; 
-    const response = await fetch(url) ; 
-    const json = await response.json(); 
-    return json ; 
-}
-
-const getForecastWeatherByCoordinates = async (lat , lon) => { 
-    const url =`${BASR_URL}/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric` ; 
-    const response = await fetch(url) ; 
-    const json = await response.json(); 
-    return json ; 
-} 
-
-
 
 
 const renderCurrentWeather = (data) => { 
@@ -77,7 +41,7 @@ const getWeekDay = (date) => {
 }
 
 const renderForecasttWeather = (data) => {
-     
+
     forecastContainer.innerHTML = "" ;
 
     data = data.list.filter((obj) => obj.dt_txt.endsWith("12:00:00")) ; 
@@ -101,20 +65,18 @@ const searchHandler = async () => {
         alert("Please enter city name!") ; 
         return ; 
     }
-  const currentData =  await getCurrentWeatherByName(cityName) ;
+  const currentData =  await getWeatherData("current", cityName) ;
   renderCurrentWeather(currentData) ; 
-  const forecastData = await getForecastWeatherByName(cityName) ; 
+  const forecastData = await getWeatherData("forecast", cityName) ; 
   renderForecasttWeather(forecastData) ;  
 }
 
 const positionCallback = async (position) => { 
 
-    const {latitude, longitude} = position.coords; 
-    const currentData = await getCurrentWeatherByCoordinates(latitude , longitude) ; 
+    const currentData = await getWeatherData("current" , position.coords) ; 
     renderCurrentWeather(currentData) ; 
-    const forecastData = await getForecastWeatherByCoordinates(latitude , longitude) ;
+    const forecastData = await getWeatherData("forecast" , position.coords) ;
     renderForecasttWeather(forecastData) ;
-
 }
 
 const errorCallback = (error) => { 
@@ -130,10 +92,6 @@ const locationHandler = () => {
         alert ("Your Browser does not support geolocation") ; 
     }
 }
-
-
-
-
 
 searchButton.addEventListener("click" , searchHandler) ; 
 locationIcon.addEventListener("click" , locationHandler)
