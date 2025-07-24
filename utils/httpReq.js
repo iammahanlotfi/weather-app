@@ -1,3 +1,5 @@
+import { showModal } from "./modal.js";
+
 const BASR_URL = "https://api.openweathermap.org/data/2.5";
 const API_KEY = "b32806747e7d4a7d7689a1f37cef306f" ; 
 
@@ -36,11 +38,11 @@ const getWeatherData = async (type , data) => {
         return json ; 
     }
     else { 
-        console.log(json.message) ; 
+        showModal(json.message) ; 
     }
     }
     catch (error) { 
-        console.log("An error occured when fetching data") ; 
+        showModal("An error occured when fetching data") ; 
     } 
 }
 
