@@ -211,6 +211,9 @@ body {
     #weather #info { 
         flex-direction: column;
     }
+    #weather #info P:last-child { 
+        margin-top: 15px;
+    }
     #modal > div { 
         width: 80%;
         margin: auto;
